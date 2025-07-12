@@ -7,7 +7,7 @@ def connect_db():
     return mysql.connector.connect(
         host= 'localhost',
         user= 'root',
-        password= 'generators',
+        password= 'database',
     )
 
 # Create ALX_prodev database
@@ -21,15 +21,15 @@ def connect_to_prodev():
     return mysql.connector.connect(
         host="localhost",
         user="root",
-        password="generators",
+        password="database",
         database="ALX_prodev"
     )
 # Create user_data table
 def create_table(connection):
     cursor = connection.cursor()
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS user-data (
-            user_id CHAR (40) Primary Key,
+        CREATE TABLE IF NOT EXISTS user_data (
+            user_id CHAR (36) Primary Key,
             name VARCHAR(100) NOT NULL,
             email VARCHAR(100) NOT NULL,
             age DECIMAL NOT NULL,
@@ -64,6 +64,11 @@ def insert_data(connection, csv_file):
     connection.commit()
     cursor.close()
 
+def stream_users(connection):
+    cursor = connection.cursor(buffered=False)
+    cursor.execute("SELECT * FROM user_data")
 
+    for row in cursor:
+        yield row
+    cursor.close()
 
-seed = __import__('seed')
