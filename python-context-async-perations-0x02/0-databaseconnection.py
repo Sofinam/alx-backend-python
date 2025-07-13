@@ -1,19 +1,14 @@
-import mysql.connector
+import sqlite3
 
 class DatabaseConnection:
-    # Custom context manager for MySQL connections
-    def __init__(self, host, user, password, database):
-        self.config = {
-            'host': host,
-            'user': user,
-            'password': password,
-            'database': database
-        }
+    # Custom context manager to manage SQLite connection
+    def __init__(self, db_path):
+        self.db_path = db_path
         self.connection = None
         self.cursor = None
 
     def __enter__(self):
-        self.connection = mysql.connector.connect(**self.config)
+        self.connection = sqlite3.connect.connect(self.db_path)
         self.cursor = self.connection.cursor()
         return self.cursor
     
@@ -24,13 +19,10 @@ class DatabaseConnection:
             self.connection.close()
 
 if __name__ == "__main__":
-    with DatabaseConnection(
-        host="locahost",
-        user="root",
-        password="database",
-        database="ALX_prodev"
-    ) as cursor:
-        cursor.execute("SELECT * FROM user_data")
+    db_path = "users.db"
+
+    with DatabaseConnection(db_path) as cursor:
+        cursor.execute("SELECT * FROM users")
         results = cursor.fetchall()
         for row in results:
             print(row)
